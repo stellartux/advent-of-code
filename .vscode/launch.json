@@ -5,6 +5,20 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "type": "pwa-node",
+      "request": "launch",
+      "name": "Launch Deno",
+      "program": "${file}",
+      "cwd": "${fileDirname}",
+      "runtimeExecutable": "deno",
+      "runtimeArgs": [
+        "run",
+        "--inspect-brk=127.0.0.1:9229",
+        "--allow-all"
+      ],
+      "attachSimplePort": 9229
+    },
+    {
       "type": "julia",
       "request": "launch",
       "name": "Run active Julia file",
