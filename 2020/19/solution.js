@@ -10,9 +10,9 @@ const stringLiteralRule = /\d+:\s+\"(.*)\"/
 export function newRuleSet(ruleStrings) {
   const ruleset = []
   const stringRules = ruleStrings.filter((rule) => stringLiteralRule.test(rule))
-  let nonStringRules = ruleStrings
+  const nonStringRules = ruleStrings
     .filter((rule) => !stringLiteralRule.test(rule))
-    .reduce((map, rule) => map.set(rule.split(': ')[0], rule), new Map())
+    .reduce((map, rule) => map.set(...rule.split(': ')), new Map())
 
   for (const rule of stringRules) {
     const [key, value] = rule.split(': ')
@@ -26,8 +26,8 @@ export function newRuleSet(ruleStrings) {
       }
 
       target[number] = new RegExp(
-        `^(${nonStringRules.get(number)
-          .split(': ')[1]
+        `^(${nonStringRules
+          .get(number)
           .split(' ')
           .map((token) =>
             token === '|' ? '|' : receiver[token].source.slice(1, -1)
@@ -47,4 +47,21 @@ export function solve(rules, messages) {
   )
 }
 
-console.log(solve(...loadFile('input.txt')))
+const [rules, messages] = loadFile('input.txt')
+
+export function solveB(rules, messages) {
+  const ruleset = newRuleSet(rules)
+  ruleset[8] = new RegExp(`^(${ruleset[42].source.slice(1, -1)})+$`)
+  ruleset[11] = new RegExp(
+    '^'.concat(
+      `(${ruleset[42].source.slice(1, -1)}`.repeat(10),
+      `${ruleset[31].source.slice(1, -1)})?`.repeat(9),
+      ruleset[31].source.slice(1, -1),
+      ')$'
+    )
+  )
+  return messages.reduce(
+    (count, message) => count + ruleset[0].test(message),
+    0
+  )
+}
