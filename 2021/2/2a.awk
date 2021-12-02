@@ -8,7 +8,5 @@ $1 ~ "up" {
   vpos -= $2
 }
 END {
-  print vpos
-  print hpos
   print vpos * hpos
 }
