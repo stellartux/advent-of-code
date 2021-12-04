@@ -55,3 +55,17 @@ function part1(filename::AbstractString)
         end
     end
 end
+
+function part2(filename::AbstractString)
+    nums, cards = loadgame(filename)
+    for n in nums
+        if any(call.(cards, n))
+            if length(cards) == 1
+                card = only(cards)
+                return n * sum(card.numbers .* .!card.called)
+            else
+                filter!(!iswinner, cards)
+            end
+        end
+    end
+end
