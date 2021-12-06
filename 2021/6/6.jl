@@ -1,25 +1,28 @@
 loadfish(filename)::Vector{Int} = parse.(Int, split(readchomp(filename), ','))
-
-function oneday(fish)
-    newfish = count(==(0), fish)
-    map!(f -> iszero(f) ? 6 : f - 1, fish, fish)
-    append!(fish, repeat([8], newfish))
-end
-
-function ndays(fish, n)
-    for _ in 1:n
-        oneday(fish)
-    end
-    fish
-end
-
-part1(fish::Vector{Int}) = length(ndays(fish, 80))
-
-if basename(pwd()) == "aoc"
-    cd("2021/6")
-end
 examplefish = loadfish("example.txt")
 inputfish = loadfish("input.txt")
 
-println("Part 1 answer: ", part1(inputfish))
+descendants = let
+    cache = Dict{Int,Int}()
+    function(age)
+        get!(cache, age) do
+            kids = age - 9:-7:0
+            if length(kids) == 0
+                0
+            else
+                length(kids) + sum(descendants.(kids))
+            end
+        end
+    end
+end
 
+part2(fish, days) = length(fish) + sum(descendants.(days + 8 .- fish))
+
+using Test
+@testset begin
+    @test part2(examplefish, 18) == 26
+    @test part2(examplefish, 80) == 5934
+    @test part2(examplefish, 256) == 26984457539
+    println("The answer to part 1 is: ", part2(inputfish, 80))
+    println("The answer to part 2 is: ", part2(inputfish, 256))
+end
