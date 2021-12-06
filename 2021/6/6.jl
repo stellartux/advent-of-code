@@ -26,3 +26,20 @@ using Test
     println("The answer to part 1 is: ", part2(inputfish, 80))
     println("The answer to part 2 is: ", part2(inputfish, 256))
 end
+
+# Part 2 can be done very efficiently by using matrix exponentiation.
+function matrixpart2(fish, age)
+    F = collect(count(==(n), fish) for n in 0:8)
+    P = [
+        0 1 0 0 0 0 0 0 0
+        0 0 1 0 0 0 0 0 0
+        0 0 0 1 0 0 0 0 0
+        0 0 0 0 1 0 0 0 0
+        0 0 0 0 0 1 0 0 0
+        0 0 0 0 0 0 1 0 0
+        1 0 0 0 0 0 0 1 0
+        0 0 0 0 0 0 0 0 1
+        1 0 0 0 0 0 0 0 0
+    ]
+    sum(P ^ age * F)
+end
