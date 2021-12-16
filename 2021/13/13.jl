@@ -27,13 +27,13 @@ end
 function foldhorizontal(atlas::AbstractMatrix, y::Integer)
     top = atlas[begin:y-1, :]
     bottom = atlas[y+1:end, :]
-    top .|= reverse(bottom, dims=1)
+    top .|= reverse(bottom, dims = 1)
 end
 
 function foldvertical(atlas::AbstractMatrix, x::Integer)
     left = atlas[:, begin:x-1]
     right = atlas[:, x+1:end]
-    left .|= reverse(right, dims=2)
+    left .|= reverse(right, dims = 2)
 end
 
 part1(filename::AbstractString) = part1(loaddata(filename)...)
@@ -48,20 +48,3 @@ function part2(atlas::AbstractMatrix, instrs)
     end
     atlas
 end
-
-"Converts a bitmatrix to plain PBM format."
-function pbm(bitmatrix)
-    join(
-        (
-            "P1",
-            join(reverse(size(bitmatrix)), ' '),
-            (
-                join(map(b -> b ? '1' : '0', row), ' ')
-                for row in Iterators.partition(transpose(bitmatrix), 34)
-            )...
-        ),
-        '\n'
-    ) * '\n'
-end
-
-pbm(filename::AbstractString, bitmatrix) = open(f -> write(f, pbm(bitmatrix)), filename, "w")
