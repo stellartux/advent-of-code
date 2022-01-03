@@ -1,3 +1,8 @@
+if basename(pwd()) == "aoc"
+    cd("2015/11")
+end
+include("../../helpers/helpers.jl")
+
 fromdigits(n; base = 10) = foldl((a, b) -> base * a + b, n, init = 0)
 
 alphabet = "abcdefghjkmnpqrstuvwxyz"
@@ -23,10 +28,6 @@ function isvalidpass(passdigits::AbstractVector{<:Integer})::Bool
     length(passdigits) == 8 &&
         any(a + 1 == b && b + 1 == c for (a, b, c) ∈ eachcons(passdigits, 3)) &&
         count(a == b for (a, b) ∈ Iterators.unique(eachcons(passdigits, 2))) > 1
-end
-
-function eachcons(xs::AbstractVector, n)
-    (view(xs, i:i+n-oneunit(n)) for i ∈ firstindex(xs):lastindex(xs)-n+oneunit(n))
 end
 
 # @time nextpassword("cqjxjnds")
