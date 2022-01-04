@@ -51,6 +51,8 @@ function assembunny(filename::AbstractString; vm = AssembunnyVM())
     vm
 end
 
-@assert assembunny("example.txt").a == 42
-assembunny("input.txt").a
-assembunny("input.txt"; vm = AssembunnyVM(0, 0, 1, 0)).a
+function part1()
+    @assert assembunny("example.txt").a == 42
+    assembunny("input.txt").a
+end
+part2() = assembunny("input.txt"; vm = AssembunnyVM(0, 0, 1, 0)).a
