@@ -10,7 +10,6 @@ end
 
 struct LightField
     points
-    step::Int
 end
 
 function Base.size(lightfield::LightField)
@@ -25,17 +24,23 @@ end
 
 function loadpoints(filename::AbstractString)
     LightField([
-            begin
-                a, b, c, d = parse.(Int, m.match for m in eachmatch(r"-?\d+", line))
-                LightPoint(CartesianIndex(a, b), CartesianIndex(c, d))
-            end
-            for line in eachline(filename)
-        ], 0)
+        begin
+            a, b, c, d = parse.(Int, m.match for m in eachmatch(r"-?\d+", line))
+            LightPoint(CartesianIndex(a, b), CartesianIndex(c, d))
+        end
+        for line in eachline(filename)
+    ])
 end
-lightfield = loadpoints("example.txt")
 
 function step!(lightfield::LightField; rev = false)
-    foreach(rev ? point -> point.position -= point.velocity : point -> point.position += point.velocity, lightfield.points)
+    foreach(
+        if rev
+            point -> point.position -= point.velocity
+        else
+            point -> point.position += point.velocity
+        end,
+        lightfield.points
+    )
     lightfield
 end
 
