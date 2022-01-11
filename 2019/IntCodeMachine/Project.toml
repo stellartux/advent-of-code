@@ -1,0 +1,4 @@
+name = "IntCodeMachine"
+uuid = "0930de08-dab8-4a94-8c66-ce739b56a6b0"
+authors = ["Danny Robinson <dannyrobinson@gmx.com>"]
+version = "0.1.0"
