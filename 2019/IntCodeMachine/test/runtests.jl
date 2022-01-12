@@ -15,5 +15,5 @@ end
 end
 
 # "Day 5 Example - I/O" begin
-program = [3, 0, 4, 0, 99]
-IntCodeMachine.execute!(IntCodeMachine.IntCode(program))
+# program = [3, 0, 4, 0, 99]
+# IntCodeMachine.execute!(IntCodeMachine.IntCode(program))
