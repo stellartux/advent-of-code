@@ -76,7 +76,7 @@ end
 function advance(rules::RuleDict, bits::BitMatrix)
     offset = 1 + isodd(size(bits, 1))
     inds = [x:x+offset for x in firstindex(bits):(offset+1):size(bits, 1)]
-    hcat(([(rules[bits[ys, xs]] for xs in inds)...;] for ys in inds)...)
+    vcat((hcat((rules[bits[ys, xs]] for xs in inds)...) for ys in inds)...)
 end
 
 part1(filename::AbstractString, iters = 5) = part1(loadrules(filename), iters)
@@ -92,3 +92,4 @@ end
 
 @assert part1("example.txt", 2) == 12
 part1("input.txt", 5)
+part1("input.txt", 18)
