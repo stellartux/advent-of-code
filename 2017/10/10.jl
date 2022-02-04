@@ -45,7 +45,7 @@ function part1(filename::AbstractString, n = 256)
 end
 
 @assert knothash!(CircularBuffer(5), [3, 4, 1, 5])[0:1] == [3, 4]
-part1("input.txt")
+# part1("input.txt")
 
 function sparsehash!(buffer, input::AbstractString)
     lengths = [(Int(c) for c in input)..., 17, 31, 73, 47, 23]
@@ -72,4 +72,4 @@ part2(filename::AbstractString) = densehash(readline(filename))
 @assert densehash("1,2,3") == "3efbe78a8d82f29979031a4aa0b16a9d"
 @assert densehash("1,2,4") == "63960835bcdc130f0b66d7ff4f6a5a8e"
 
-part2("input.txt")
+# part2("input.txt")
