@@ -12,8 +12,8 @@ examplesample = """Before: [3, 2, 1, 1]
     """
 
 function loadfile(filename::AbstractString)
-    samples, testprogram = split(readchomp(filename), r"\r?\n\r?\n\r?\n")
-    split(samples, r"\r?\n\r?\n"), testprogram
+    samples, testprogram = split(readchomp(filename), r"\r?\n\r?\n\r?\n\r?\n")
+    split(samples, r"\r?\n\r?\n"), [parse.(Int, split(row)) for row in split(testprogram, r"\r?\n")]
 end
 
 function part1(filename::AbstractString)
@@ -171,3 +171,24 @@ chronofns = [addi, addr, mulr, muli, banr, bani, borr, bori, setr, seti, gtir, g
 
 @assert length(possibilities(examplesample)) == 3
 part1("input.txt")
+
+function sampletoopcode(sample::AbstractString)::Int
+    parse(Int, match(r"\]\n(\d+)", sample)[1])
+end
+
+function part2()
+    samples, testprogram = loadfile("input.txt")
+    opcodes = Dict{Int,Function}()
+    poss = possibilities.(samples)
+    while !all(i in keys(opcodes) for i in 0:15)
+        i = findfirst(isone ∘ length, poss)
+        fn = only(poss[i])
+        opcodes[sampletoopcode(samples[i])] = fn
+        filter!.(!=(fn), poss)
+    end
+    registers = Registers()
+    for (op, a, b, c) in testprogram
+        opcodes[op](registers, a, b, c)
+    end
+    registers[0]
+end
