@@ -3,3 +3,5 @@
 .nrepl-port
 .lsp
 .clj-kondo
+*.com
+*.tmp.*
