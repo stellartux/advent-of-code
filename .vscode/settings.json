@@ -9,5 +9,6 @@
     "files.trimFinalNewlines": true,
     "files.trimTrailingWhitespace": true
   },
-  "julia.liveTestFile": "test/runtests.jl"
+  "julia.liveTestFile": "test/runtests.jl",
+  "C_Cpp.errorSquiggles": "Disabled",
 }
