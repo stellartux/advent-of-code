@@ -6,7 +6,7 @@ partone() {
     if [ $# -lt 3 ]; then
         set "$1" "$2" "$actual"
     fi
-    printf "%d players; last marble is worth %d points: high score is \e[1m%d\e[0m\n" "$1" "$2" "$3"
+    printf "%lu players; last marble is worth %lu points: high score is \e[1m%lu\e[0m\n" "$1" "$2" "$3"
     if [ "$actual" != "$3" ]; then
         printf "\e[30mExpected \e[31m%s\e[30m to equal \e[33m%s\e[0m\n" "$actual" "$3"
         # exit 1
@@ -21,6 +21,6 @@ partone 21 6111 54718
 partone 30 5807 37305
 
 partone 468 71843
-
+partone 468 7184300
 
 exit 0

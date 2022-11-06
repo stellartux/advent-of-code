@@ -4,14 +4,14 @@
 
 typedef struct Marble {
   struct Marble *prev, *next;
-  unsigned value;
+  unsigned long value;
 } Marble;
 
 static Marble *Print(Marble *m, Marble *t) {
   Marble *r;
   r = m;
   do {
-    printf((t == r ? "\e[1m(%d)\e[0m\t" : "%d\t"), r->value);
+    printf((t == r ? "\e[1m(%lu)\e[0m\t" : "%lu\t"), r->value);
     r = r->next;
   } while (r != m);
   putc('\n', stdout);
@@ -20,14 +20,14 @@ static Marble *PrintR(Marble *m, Marble *t) {
   Marble *r;
   r = m;
   do {
-    printf((t == r ? "\e[1m(%d)\e[0m\t" : "%d\t"), r->value);
+    printf((t == r ? "\e[1m(%lu)\e[0m\t" : "%lu\t"), r->value);
     r = r->prev;
   } while (r != m);
   putc('\n', stdout);
 }
 
 // Get the marble n marbles to the left.
-static Marble *Left(Marble *m, unsigned n) {
+static Marble *Left(Marble *m, unsigned long n) {
   while (n > 0) {
     m = m->prev;
     --n;
@@ -36,7 +36,7 @@ static Marble *Left(Marble *m, unsigned n) {
 }
 
 // Get the marble n marbles to the right.
-static Marble *Right(Marble *m, unsigned n) {
+static Marble *Right(Marble *m, unsigned long n) {
   while (n > 0) {
     m = m->next;
     --n;
@@ -46,7 +46,7 @@ static Marble *Right(Marble *m, unsigned n) {
 
 // Add a marble to the right of the current marble.
 // Returns the new marble.
-static Marble *Add(Marble *m, unsigned value) {
+static Marble *Add(Marble *m, unsigned long value) {
   Marble *n;
   n = malloc(sizeof(Marble));
   n->prev = m;
@@ -71,10 +71,10 @@ static Marble *Remove(Marble *m) {
 }
 
 int main(int argc, char *argv[]) {
-  unsigned *scores, i, limit, players, result;
+  unsigned long *scores, i, limit, players, result;
   Marble *m, *r;
   assert(argc < 3);
-  scores = calloc(sizeof(unsigned), atoi(argv[1]));
+  scores = calloc(sizeof(unsigned long), atoi(argv[1]));
   r = m = malloc(sizeof(Marble));
   m->prev = m;
   m->next = m;
@@ -102,5 +102,5 @@ int main(int argc, char *argv[]) {
       result = scores[i];
     }
   }
-  printf("%d\n", result);
+  printf("%lu\n", result);
 }
