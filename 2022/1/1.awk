@@ -1,11 +1,9 @@
-BEGIN { i = 0 }
+#!/usr/bin/gawk -f
+
 { a[i] += $1 }
-/^$/ {
-    i++
-    next
-}
+/^$/ { i++ }
 END {
-    asort(a)
-    print a[length(a)]
-    print a[length(a)] + a[length(a) - 1] + a[length(a) - 2]
+    len = asort(a)
+    print a[len]
+    print a[len] + a[len - 1] + a[len - 2]
 }
