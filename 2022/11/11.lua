@@ -3,6 +3,7 @@
 
 local Iterators = require("ji/iterators")
 local map, collect, keys = Iterators.map, Iterators.collect, Iterators.keys
+local lcm = require("ji/math").lcm
 
 local operations = {
     ---@type fun(x: integer?): fun(y: integer): integer
@@ -27,6 +28,7 @@ end
 ---@field opstring string
 ---@field opvalue integer?
 ---@field inspections integer
+---@field lcm integer
 local Monkey = setmetatable({}, {
     __name = "Monkey",
     ---@param s string
@@ -55,7 +57,9 @@ function Monkey:__tostring()
 end
 
 ---@param monkeys Monkeys
-function Monkey:takeround(monkeys, verbosity)
+---@param part 1|2
+---@param verbosity integer?
+function Monkey:takeround(monkeys, part, verbosity)
     verbosity = verbosity or 0
     if verbosity > 1 then print(("Monkey %d:"):format(self.id)) end
     self.inspections = self.inspections + #self
@@ -70,11 +74,15 @@ function Monkey:takeround(monkeys, verbosity)
             print(("    Worry level is %s by %s to %d.")
                 :format(self.opstring, self.opvalue or "itself", worry))
         end
-        worry = worry // 3
-        if verbosity > 1 then
-            print(("    Monkey gets bored with item. " ..
-                "Worry level is divided by 3 to %d.")
-                :format(worry))
+        if part == 1 then
+            worry = worry // 3
+            if verbosity > 1 then
+                print(("    Monkey gets bored with item. " ..
+                    "Worry level is divided by 3 to %d.")
+                    :format(worry))
+            end
+        else
+            worry = worry % monkeys.lcm
         end
         local decision = self:test(worry)
         local nextmonkey = decision and self.ontrue or self.onfalse
@@ -100,10 +108,11 @@ local Monkeys = setmetatable({}, {
     ---@param filename string
     ---@return Monkeys
     __call = function(self, filename)
-        local monkeys = { round = 0 }
+        local monkeys = { round = 0, lcm = 1 }
         for description in io.open(filename):read("a"):gmatch("M[^M]+") do
             local monkey = Monkey(description)
             monkeys[monkey.id] = monkey
+            monkeys.lcm = lcm(monkeys.lcm, monkey.testvalue)
         end
         return setmetatable(monkeys, self)
     end
@@ -141,31 +150,21 @@ function Monkeys:monkeybusiness(verbosity)
     return most * secondmost
 end
 
----@param verbosity integer?
-function Monkeys:takeround(verbosity)
-    verbosity = verbosity or 0
-    for _, monkey in pairs(self) do
-        monkey:takeround(self, verbosity)
-    end
-end
-
----@param monkeys Monkeys
 ---@param verbosity integer
----@return integer
-local function PartOne(monkeys, verbosity)
-    verbosity = verbosity or 0
-    if verbosity > 0 then
-        print(monkeys)
+function Monkeys:takeround(part, round, verbosity)
+    if verbosity > 1 then print(self) end
+    for _, monkey in pairs(self) do
+        monkey:takeround(self, part, verbosity)
     end
-    for round = 1, 20 do
-        monkeys:takeround(verbosity)
-        if verbosity > 0 then
-            print("After round " .. round ..
-                ", the monkeys are holding items with these worry levels:")
-            print(monkeys)
-        end
+    if part == 1 and verbosity > 1 then
+        print("After round " .. round ..
+            ", the monkeys are holding items with these worry levels:")
+        print(self)
+    elseif part == 2 and verbosity > 0 and (round == 1 or round == 20 or round % 1000 == 0) then
+        print(("== After round %d =="):format(round))
+        self:monkeybusiness(1)
+        print()
     end
-    return monkeys:monkeybusiness(verbosity)
 end
 
 ---@param filename string
@@ -176,9 +175,14 @@ local function main(verbosity, filename)
         filename = verbosity
         verbosity = 0
     end
-    local monkeys = Monkeys(filename)
-    print(PartOne(monkeys, verbosity))
-    -- print(PartTwo(monkeys, verbosity))
+    for part = 1, 2 do
+        local monkeys = Monkeys(filename)
+        for round = 1, part == 1 and 20 or 10000 do
+            monkeys:takeround(part, round, verbosity)
+        end
+        print(monkeys:monkeybusiness(verbosity))
+        if verbosity > 0 then print() end
+    end
 end
 
 if pcall(debug.getlocal, 4, 1) then
