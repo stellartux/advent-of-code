@@ -1,9 +1,38 @@
 #!/usr/bin/env lua
 -- usage: lua 11.lua --verbosity=[0-2] filename.txt
 
-local Iterators = require("ji/iterators")
-local map, collect, keys = Iterators.map, Iterators.collect, Iterators.keys
-local lcm = require("ji/math").lcm
+local function map(mapper, iterator, iterand, key)
+    return function()
+        local value
+        key, value = iterator(iterand, key)
+        if key ~= nil then
+            return key, mapper(value, key, iterand)
+        end
+    end
+end
+
+local function collect(...)
+    local result = {}
+    for _, value in ... do
+        table.insert(result, value)
+    end
+    return result
+end
+
+local function keys(...) return map(function(_, x) return x, x end, ...) end
+
+---@param x integer
+---@param y integer
+local function gcd(x, y)
+    return y == 0 and x or gcd(y, x % y)
+end
+
+---Calculates the least common multiple of the given integers.
+---@param x integer >= 0
+---@param y integer >= 0
+local function lcm(x, y)
+    return x * y // gcd(x, y)
+end
 
 local operations = {
     ---@type fun(x: integer?): fun(y: integer): integer
@@ -159,7 +188,6 @@ function Monkeys:takeround(part, round, verbosity)
     if part == 1 and verbosity > 1 then
         print("After round " .. round ..
             ", the monkeys are holding items with these worry levels:")
-        print(self)
     elseif part == 2 and verbosity > 0 and (round == 1 or round == 20 or round % 1000 == 0) then
         print(("== After round %d =="):format(round))
         self:monkeybusiness(1)
@@ -178,7 +206,7 @@ local function main(verbosity, filename)
     for part = 1, 2 do
         local monkeys = Monkeys(filename)
         for round = 1, part == 1 and 20 or 10000 do
-            monkeys:takeround(part, round, verbosity)
+            monkeys:takeround(part, round, verbosity + 1 - part)
         end
         print(monkeys:monkeybusiness(verbosity))
         if verbosity > 0 then print() end
