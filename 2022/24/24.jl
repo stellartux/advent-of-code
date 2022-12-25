@@ -204,11 +204,15 @@ function neighbours(coord)
 end
 
 partone(filename::AbstractString; kwargs...) = partone(Basin(filename); kwargs...)
-function partone(b::Basin; verbose=false)
+function partone(
+    b::Basin,
+    startpoint=CartesianIndex(0, 1),
+    endpoint=CartesianIndex(size(b)) + convert(CartesianIndex, Down);
+    verbose=false
+)
     visitors = []
-    nextvisitors = Set{CartesianIndex{2}}((CartesianIndex(0, 1),))
+    nextvisitors = Set{CartesianIndex{2}}((startpoint,))
     minute = 0
-    target = CartesianIndex(size(b)) + convert(CartesianIndex, Down)
     if verbose
         println("\e[?1049h\e[?25l\e[s")
         printframe(b, "Initial state:", visitors)
@@ -218,10 +222,10 @@ function partone(b::Basin; verbose=false)
         minute += 1
         visitors = collect(nextvisitors)
         empty!(nextvisitors)
-        push!(nextvisitors, CartesianIndex(0, 1))
+        push!(nextvisitors, startpoint)
         for visitor in visitors
             for n in neighbours(visitor)
-                if n == target
+                if n == endpoint
                     if verbose
                         println("\e[?1049l\e[?25h\e[u")
                     end
@@ -237,4 +241,12 @@ function partone(b::Basin; verbose=false)
             return -1
         end
     end
+end
+
+parttwo(filename::AbstractString; kwargs...) = parttwo(Basin(filename); kwargs...)
+function parttwo(b::Basin; verbose=false)
+    t = partone(b; verbose = verbose)
+    t += partone(b, CartesianIndex(size(b)) + convert(CartesianIndex, Down), CartesianIndex(0, 1); verbose = verbose)
+    t += partone(b; verbose = verbose)
+    t
 end
