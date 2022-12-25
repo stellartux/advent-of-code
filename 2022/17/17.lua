@@ -12,24 +12,24 @@ local function forever(fn, t, k)
     end
 end
 
----@class Coord: integer[]
----@operator call(integer[]?): Coord
----@operator add(Coord): Coord
-local Coord = setmetatable({
+---@class Coord17: integer[]
+---@operator call(integer[]?): Coord17
+---@operator add(Coord17): Coord17
+local Coord17 = setmetatable({
     __name = "Coord"
 }, {
     __call = function(self, t)
-        return setmetatable(t or { 0, 0 }, self)
+        return setmetatable(t, self)
     end
 })
-Coord.__index = Coord
+Coord17.__index = Coord17
 
-function Coord:__add(other)
+function Coord17:__add(other)
     local t = {}
     for i = 1, #self do
         t[i] = self[i] + other[i]
     end
-    return Coord(t)
+    return Coord17(t)
 end
 
 local function rangenext(n, i)
