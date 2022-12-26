@@ -6,29 +6,22 @@ struct SNAFU
     x::Int
 end
 
-function snafudigit(c::AbstractChar)
-    if c == '='
-        -2
-    elseif c == '-'
-        -1
-    else
-        c - '0'
-    end
-end
+Base.:+(s::SNAFU, o::SNAFU) = SNAFU(s.x + o.x)
 
 function Base.parse(::Type{SNAFU}, s::AbstractString)
-    sum(snafudigit(d) * (5 ^ i) for (i, d) in zip(Iterators.countfrom(0), reverse(s)))
+    SNAFU(sum((findfirst(d, "=-012") - 3) * 5^(i - 1) for (i, d) in pairs(reverse(s))))
 end
 
 function Base.digits(snafu::SNAFU)
-    ds = digits(snafu.x; base = 5)
-    for (i, d) in enumerate(ds)
-        if d > 2
-            if i == length(ds)
-                push!(ds, 0)
+    ds = digits(snafu.x; base=5)
+    for i in eachindex(ds)
+        if ds[i] > 2
+            ds[i] -= 5
+            if i == lastindex(ds)
+                push!(ds, 1)
+            else
+                ds[i+1] += 1
             end
-            ds[i] = d - 5
-            ds[i + 1] += 1
         end
     end
     ds
@@ -55,6 +48,8 @@ Base.show(io::IO, snafu::SNAFU) = print(io, "SNAFU(\"", snafu, "\")")
 @assert string(SNAFU(12345)) == "1-0---0"
 @assert string(SNAFU(314159265)) == "1121-1110-1=0"
 
-function partone(filename::AbstractString)
-    SNAFU(sum(parse(SNAFU, s) for s in eachline(filename)))
-end
+partone(filename::AbstractString) = sum(parse.(SNAFU, eachline(filename)))
+
+# @time partone("input.txt")
+#   0.000072 seconds (401 allocations: 13.414 KiB)
+# SNAFU("2-02===-21---2002==0")
