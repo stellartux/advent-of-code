@@ -1,61 +1,78 @@
-instructions = string.(split(strip(read("input.txt", String)), "\n"))
-
-struct Bitmask
-    andmask::UInt64
-    ormask::UInt64
+if basename(pwd()) != "14"
+    cd("2020/14")
 end
-Bitmask(raw::String) = Bitmask([parse(Int, replace(raw[8:end], "X" => l), base=2) for l in "10"]...)
-mask(number::UInt64, bitmask::Bitmask) = (number & bitmask.andmask) | bitmask.ormask
+using SparseArrays
 
-struct Mutator
-    address::UInt64
-    value::UInt64
+struct Mask{I<:Integer} # where I is at least 36 bits wide
+    and::I
+    or::I
 end
-Mutator(raw::String) = Mutator(parse.(Int, match(r"\[(\d+)\] = (\d+)", raw).captures)...)
 
-function run(instructions::Array{String})::UInt64
-    program = [(startswith(instruction, "mask") ? Bitmask : Mutator)(instruction) for instruction in instructions]
-    memory = zeros(UInt64, maximum(m -> m.value, filter(x -> isa(x, Mutator), program)))
-    bitmask = nothing
+function Mask(s::AbstractString)
+    s = match(r"[X01]+", s).match
+    and = parse(Int, replace(s, 'X' => '1'), base=2)
+    or = parse(Int, replace(s, 'X' => '0'), base=2)
+    Mask(and, or)
+end
 
-    for instruction in program
-        if instruction isa Bitmask
-            bitmask = instruction
-        elseif instruction isa Mutator
-            memory[instruction.address] = mask(instruction.value, bitmask)
+function Base.show(io::IO, m::Mask)
+    print(io, typeof(m), "(\"",
+        (isone(1 & m.and >> i) ? isone(1 & m.or >> i) ? '1' : 'X' : '0' for i = 35:-1:0)...,
+        "\")")
+end
+
+mask(n::I, m::Mask{I}) where {I<:Integer} = (n & m.and) | m.or
+
+function partone(filename::AbstractString)
+    m = nothing
+    memory = spzeros(Int, 2^36)
+    for line in eachline(filename)
+        if startswith(line, "mask = ")
+            m = Mask(line)
+        else
+            addr, value = parse.(Int, match(r"mem\[(\d+)\] = (\d+)", line))
+            memory[addr] = mask(value, m)
         end
     end
-    
     sum(memory)
 end
 
-run(program)
-
-function maskedaddresses(address::String, mask::String)
-    result = []
-    for maskno in 0:(1 << count("X", mask))
-        b = string(maskno, base=2)
-        push!(result, parse(Int64, address) | b)
+function fromdigits(ds; base=10)
+    result = 0
+    for d in ds
+        result = base * result + d
     end
     result
 end
 
-using SparseArrays
+function maskedaddresses(n::I, m::Mask{I}) where {I<:Integer}
+    wild = m.and ⊻ m.or
+    n |= m.or
+    (
+        begin
+            ds = []
+            xds = digits(x, base=2, pad=36)
+            for (nd, wd) in zip(digits.((n, wild); base=2, pad=36)...)
+                pushfirst!(ds, isone(wd) ? popfirst!(xds) : nd)
+            end
+            fromdigits(ds, base=2)
+        end
+        for x in 0:(2^count_ones(wild)-1)
+    )
+end
 
-function otherrun(instructions::Array{String})::UInt64
-    memory = spzeros(UInt64, 2^36)
-    bitmask = nothing
-
-    for instruction in instructions
-        if startswith("mask", instruction)
-            bitmask = instruction[8:end]
+function parttwo(filename::AbstractString)
+    m = nothing
+    memory = spzeros(Int, 2^36)
+    for line in eachline(filename)
+        if startswith(line, "mask = ")
+            m = Mask(line)
         else
-            address, value = parse.(Int, match(r"\[(\d+)\] = (\d+)", raw).captures)
-            for maskedaddress in maskedaddresses(address, bitmask)
-                memory[maskedaddress] = value
+            addr, value = parse.(Int, match(r"mem\[(\d+)\] = (\d+)", line))
+            for a in maskedaddresses(addr, m)
+                memory[a] = value
             end
         end
     end
-
     sum(memory)
 end
