@@ -10,10 +10,7 @@ local function AllUnique(t)
 end
 
 local function FindResult(s, n)
-    local t = {}
-    for i = 1, n do
-        table.insert(t, s:byte(i))
-    end
+    local t = table.pack(s:byte(1, n))
     local i = n
     while i <= #s do
         if AllUnique(t) then return i end
