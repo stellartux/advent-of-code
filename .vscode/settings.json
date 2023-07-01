@@ -10,5 +10,25 @@
     "files.trimTrailingWhitespace": true
   },
   "julia.liveTestFile": "test/runtests.jl",
-  "C_Cpp.errorSquiggles": "Disabled",
+  "C_Cpp.errorSquiggles": "disabled",
+  // "editor.formatOnSave": true,
+  "[markdown]": {
+    "editor.unicodeHighlight.ambiguousCharacters": false,
+    "editor.unicodeHighlight.invisibleCharacters": false,
+    "editor.wordWrap": "wordWrapColumn",
+    "editor.wordWrapColumn": 80,
+    "editor.quickSuggestions": {
+      "comments": "off",
+      "strings": "off",
+      "other": "off"
+    }
+  },
+  "markdownlint.config": {
+    "MD033": false
+  },
+  "Lua.workspace.library": [
+    "/home/dan/.config/Code - OSS/User/globalStorage/sumneko.lua/addonManager/addons/busted/module/library",
+    "${3rd}/luassert/library"
+  ],
+  "Lua.workspace.checkThirdParty": false,
 }

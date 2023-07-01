@@ -5,3 +5,5 @@
 .clj-kondo
 *.com
 *.tmp.*
+input.txt
+example*.txt
