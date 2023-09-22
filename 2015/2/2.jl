@@ -1,4 +1,4 @@
-part1(filename::AbstractString) = sum(area(line) for line in eachline(filename))
+part1(filename::AbstractString) = sum(area.(eachline(filename)))
 
 function area(line::AbstractString)
     x, y, z = parse.(Int, split(line, 'x'))
@@ -9,7 +9,7 @@ end
 @assert area("2x3x4") == 58
 @assert area("1x1x10") == 43
 
-part2(filename::AbstractString) = sum(ribbonlength(line) for line in eachline(filename))
+part2(filename::AbstractString) = sum(ribbonlength.(eachline(filename)))
 
 function ribbonlength(line::AbstractString)
     dims = parse.(Int, split(line, 'x'))
