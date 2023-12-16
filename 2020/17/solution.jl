@@ -1,5 +1,5 @@
 function makeneighbourhood(dims::Int)::Array{CartesianIndex}
-    filter(c -> !all(==(0), c[i] for i in 1:length(c)), CartesianIndices(tuple(repeat([-1:1], dims)...)))
+    filter(c -> !all(==(0), c[i] for i in eachindex(c)), CartesianIndices(tuple(repeat([-1:1], dims)...)))
 end
 
 mutable struct CellularAutomaton
@@ -12,7 +12,7 @@ function rules(grid::Set{CartesianIndex}, location::CartesianIndex, neighbourhoo
 end
 
 function CellularAutomaton(initstate::String, active::Char; rowseparator='\n', size=3)
-    grid = Set{CartesianIndex}()  
+    grid = Set{CartesianIndex}()
 
     for (j, row) in Iterators.enumerate(split(initstate, rowseparator))
         for (i, cell) in Iterators.enumerate(row)

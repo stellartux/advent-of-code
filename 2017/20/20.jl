@@ -1,7 +1,6 @@
 if basename(pwd()) == "aoc"
     cd("2017/20")
 end
-include("../../helpers/inherit.jl")
 
 using StaticArrays: MVector
 using StatsBase: countmap

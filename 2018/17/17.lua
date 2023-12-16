@@ -34,11 +34,11 @@ Material.water = Material("~", 36)
 Material.wetsand = Material("|", 34)
 
 ---@class Reservoir: Material[][]
----@field min Coord
----@field max Coord
+---@field min Coord17
+---@field max Coord17
 ---@field columns integer?
 ---@field lines integer?
----@field view Coord?
+---@field view Coord17?
 ---@field frametime integer?
 local Reservoir = { __name = "Reservoir" }
 Reservoir.__index = Reservoir

@@ -1,4 +1,4 @@
-if basename(pwd()) == "aoc"
+if basename(pwd()) != "16"
     cd("2018/16")
 end
 using OffsetArrays, StaticArrays

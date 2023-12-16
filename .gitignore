@@ -5,7 +5,7 @@
 .clj-kondo
 *.com
 *.tmp.*
-**/tmp.*
-input.txt
+**/tmp*
+input*.txt
 example*.txt
 **/out/*

@@ -6,7 +6,7 @@
 :- initialization(main, main).
 main([]) :- main(["2019/2/input.txt"]).
 main([File]) :-
-    phrase_from_file(load_program(Program0), File),
+    phrase_from_file(program(Program0), File),
     Program0 = [Instr, _, _| Rest],
     append([Instr, 12, 2], Rest, Program1),
     interpret(Program1, [A|_]), !,
@@ -15,7 +15,7 @@ main([File]) :-
     interpret(Program2, [19690720|_]), !,
     format("~|~`0t~d~2+~|~`0t~d~2+", [X, Y]).
 
-load_program(Program) --> sequence(integer, ",", Program), blanks.
+program(Program) --> sequence(integer, ",", Program), blanks.
 
 select_nth0(N, XList, Y, YList) :-
     nth0(N, XList, _, Rest),
@@ -55,7 +55,7 @@ instruction(2, IP0, IP, VM0, VM) :-
     select_nth0(C, VM0, ElemC, VM),
     IP #= IP0 + 4.
 
-:- begin_tests(interpret).
+:- begin_tests(y2019day2).
 
     test(interpret1) :-
         assertion(interpret([1,0,0,0,99], [2,0,0,0,99])).
@@ -66,4 +66,4 @@ instruction(2, IP0, IP, VM0, VM) :-
     test(interpret4) :-
         assertion(interpret([1,1,1,4,99,5,6,0,99], [30,1,1,4,2,5,6,0,99])).
 
-:- end_tests(interpret).
+:- end_tests(y2019day2).

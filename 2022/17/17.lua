@@ -1,5 +1,7 @@
 #!/usr/bin/env lua
 
+---@class Coord
+local Coord = require("coord")
 local function forever(fn, t, k)
     local i = k
     return function()
@@ -10,26 +12,6 @@ local function forever(fn, t, k)
         end
         return k, v
     end
-end
-
----@class Coord17: integer[]
----@operator call(integer[]?): Coord17
----@operator add(Coord17): Coord17
-local Coord17 = setmetatable({
-    __name = "Coord"
-}, {
-    __call = function(self, t)
-        return setmetatable(t, self)
-    end
-})
-Coord17.__index = Coord17
-
-function Coord17:__add(other)
-    local t = {}
-    for i = 1, #self do
-        t[i] = self[i] + other[i]
-    end
-    return Coord17(t)
 end
 
 local function rangenext(n, i)
@@ -69,6 +51,7 @@ local Rock = setmetatable({
         rock.offsets = self.offsets[type]
         rock.height = self.height[type]
         rock[2] = rock[2] + rock.height
+        rock.type = type
         return setmetatable(rock, self)
     end,
     __index = Coord
