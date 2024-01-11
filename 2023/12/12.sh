@@ -7,6 +7,7 @@ file=${1:-2023/12/input.txt}
     file=$(basename "$file")
     swipl 12.pl "$file"
     total=0
+    mkdir -p tmp
     rm -rf tmp/**
     split -l 100 "$file" tmp/
     for input in tmp/**; do
