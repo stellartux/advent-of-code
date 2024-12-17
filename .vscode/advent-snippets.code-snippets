@@ -55,7 +55,7 @@
 			"\tInput = Result.",
 			"",
 			"main([File]) :-",
-			"\tphrase_from_file(load(Input), File),",
+			"\tonce(phrase_from_file(load(Input), File)),",
 			"\tpart_one(Input, ResultOne),",
 			"\twriteln(ResultOne),",
 			"\tpart_two(Input, ResultTwo),",
