@@ -9,7 +9,7 @@ function load(file::AbstractString)
     if occursin("example", file)
         size, range = 7, 12
     end
-    coords[1:range], coords[range+1:end], size
+    Set(coords[1:range]), coords[range+1:end], size
 end
 
 const up = CartesianIndex(0, -1)
@@ -27,7 +27,7 @@ function disp(grid, blocked)
     end
 end
 
-function search(blocked, size)::Union{Int,Nothing}
+function search(blocked, size::Int)::Union{Int,Nothing}
     grid = fill(typemax(Int), size, size)
     routes = [(CartesianIndex(1, 1), 0)]
     target = CartesianIndex(size, size)
@@ -47,16 +47,32 @@ function search(blocked, size)::Union{Int,Nothing}
     nothing
 end
 
-partone((input, _, size)) = search(Set(input), size)
+partone((input, _, size)) = search(input, size)
 
-# function parttwo(input)
+function splitlist(list)
+    len = cld(length(list), 2)
+    list[1:len], list[len+1:end]
+end
 
-# end
+function parttwo((safe, unsafe, size))
+    blocked = Set(safe)
+    left, right = splitlist(unsafe)
+    while !isempty(right)
+        union!(blocked, left)
+        if isnothing(search(blocked, size))
+            left, right = splitlist(left)
+            setdiff!(blocked, right)
+        else
+            left, right = splitlist(right)
+        end
+    end
+    join(Tuple(only(left)) .- 1, ",")
+end
 
 if abspath(PROGRAM_FILE) == @__FILE__
     input = load(get(ARGS, 1, joinpath(@__DIR__, "input.txt")))
     println(partone(input))
-    # println(parttwo(input))
+    println(parttwo(input))
 end
 
 end # module
