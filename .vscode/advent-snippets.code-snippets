@@ -1,13 +1,12 @@
 {
 	"Advent of Code Julia": {
 		"scope": "julia",
-		"isFileTemplate": true,
 		"prefix": "#!advent",
 		"body": [
 			"#!/usr/bin/env julia",
 			"# usage: julia ${2:1}.jl [FILENAME]",
 			"",
-			"module AOC20${1:24}Day${2:1}",
+			"module AOC20${1:25}Day${2:1}",
 			"",
 			"function load(file::AbstractString)",
 			"\t${0}",
@@ -25,6 +24,9 @@
 			"\tinput = load(get(ARGS, 1, joinpath(@__DIR__, \"input.txt\")))",
 			"\tprintln(partone(input))",
 			"\t# println(parttwo(input))",
+			"elseif isinteractive()",
+			"\tusing REPL",
+			"\tREPL.activate(AOC20${1:25}Day${2:1})",
 			"end",
 			"",
 			"end # module",
@@ -33,7 +35,6 @@
 	},
 	"Advent of Code Prolog": {
 		"scope": "prolog",
-		"isFileTemplate": true,
 		"prefix": "#!advent",
 		"body": [
 			"#!/usr/bin/env swipl",
@@ -67,7 +68,6 @@
 	},
 	"Advent of Code Shell": {
 		"prefix": "#!advent",
-		"isFileTemplate": true,
 		"scope": "shellscript",
 		"body": [
 			"#!/bin/sh",

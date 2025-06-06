@@ -30,4 +30,5 @@
     "${3rd}/luassert/library"
   ],
   "Lua.workspace.checkThirdParty": false,
+  "deno.enable": true,
 }
