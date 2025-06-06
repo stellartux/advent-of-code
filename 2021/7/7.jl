@@ -1,18 +1,26 @@
-loadcrabs(filename) = parse.(Int, split(readchomp(filename), ','))
+#!/usr/bin/env julia
+# usage: julia 7.jl [FILENAME]
 
-if basename(pwd()) == "aoc"
-    cd("2021/7")
-end
-examplecrabs = loadcrabs("example.txt")
-inputcrabs = loadcrabs("input.txt")
+module AOC2021Day7
+using Statistics: median
 
-using Statistics
-part1(crabs) = sum(abs.(crabs .- median(crabs)))
-part1(inputcrabs) # 331067
+load(file::AbstractString) =  parse.(Int, split(readchomp(file), ','))
+
+partone(crabs) = sum(abs.(crabs .- median(crabs)))
 
 triangle(n) = n * (n + 1) ÷ 2
 offset(a, b) = triangle(abs(a - b))
 
-function part2(crabs)
+parttwo(crabs) =
     minimum(sum(offset(x, n) for x in crabs) for n in range(extrema(crabs)...))
+
+if abspath(PROGRAM_FILE) == @__FILE__
+    input = load(get(ARGS, 1, joinpath(@__DIR__, "input.txt")))
+    println(partone(input))
+    println(parttwo(input))
+elseif isinteractive()
+    using REPL
+    REPL.activate(AOC2021Day7)
 end
+
+end # module
