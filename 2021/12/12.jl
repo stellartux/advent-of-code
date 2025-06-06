@@ -1,4 +1,9 @@
-function loadcavelist(filename::AbstractString)
+#!/usr/bin/env julia
+# usage: julia 12.jl [FILENAME]
+
+module AOC202021Day12
+
+function load(file::AbstractString)
     links = Dict{SubString, Vector{SubString}}()
     function addlink(l, r)
         if haskey(links, l)
@@ -7,7 +12,7 @@ function loadcavelist(filename::AbstractString)
             links[l] = [r]
         end
     end
-    for line in readlines(filename)
+    for line in readlines(file)
         l, r = split(line, '-')
         addlink(l, r)
         addlink(r, l)
@@ -17,9 +22,7 @@ end
 
 isbigcave(cave::AbstractString) = first(cave) < 'a'
 
-function part1(filename::AbstractString)
-    length(takepath(loadcavelist(filename), "start"))
-end
+partone(caves) = length(takepath(caves, "start"))
 
 function takepath(links::Dict, here::AbstractString, history = [])
     push!(history, here)
@@ -33,18 +36,7 @@ function takepath(links::Dict, here::AbstractString, history = [])
     end
 end
 
-if basename(pwd()) == "aoc"
-    cd("2021/12")
-end
-
-@assert part1("example.txt") == 10
-@assert part1("example2.txt") == 19
-@assert part1("example3.txt") == 226
-# clipboard(@show part1("input.txt"))
-
-function part2(filename::AbstractString)
-    length(takepath2(loadcavelist(filename), "start"))
-end
+parttwo(caves) = length(takepath2(caves, "start"))
 
 function takepath2(links::Dict, here::AbstractString, history = [])
     push!(history, here)
@@ -62,7 +54,13 @@ function takepath2(links::Dict, here::AbstractString, history = [])
     end
 end
 
-@assert part2("example.txt") == 36
-@assert part2("example2.txt") == 103
-@assert part2("example3.txt") == 3509
-clipboard(@show part2("input.txt"))
+if abspath(PROGRAM_FILE) == @__FILE__
+    input = load(get(ARGS, 1, joinpath(@__DIR__, "input.txt")))
+    println(partone(input))
+    println(parttwo(input))
+elseif isinteractive()
+    using REPL
+    REPL.activate(AOC202021Day12)
+end
+
+end # module
