@@ -38,7 +38,7 @@
 		"prefix": "#!advent",
 		"body": [
 			"#!/usr/bin/env swipl",
-			"% usage: swipl ${2:1}.pl [FILENAME]",
+			"% usage: swipl ${2:1}.pl FILENAME",
 			"",
 			":- module(aoc20${1:24}day${2:1}, []).",
 			":- module(aoc20${1:24}day${2:1}).",
@@ -61,8 +61,6 @@
 			"\twriteln(ResultOne),",
 			"\tpart_two(Input, ResultTwo),",
 			"\twriteln(ResultTwo).",
-			"",
-			"main([]) :- main(['input.txt']).",
 			"",
 		],
 	},
