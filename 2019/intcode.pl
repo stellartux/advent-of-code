@@ -18,7 +18,7 @@ interpret(In, Out) --> interpret(0, In, [], Out).
 interpret(IP0, In0, Out0, Out) -->
     get_instruction(IP0, Instruction),
     (   { Instruction == 99 }
-    ->  { Out0 = Out }
+    ->  { reverse(Out0, Out) }
     ;   instruction(Instruction, In0, In1, Out0, Out1, IP0, IP1),
         interpret(IP1, In1, Out1, Out)
     ).
