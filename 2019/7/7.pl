@@ -1,10 +1,9 @@
 #!/usr/bin/env swipl
-% usage: swipl 7.pl FILENAME
+% usage: swipl 7.pl [FILENAME]
 
 :- module(aoc2019day7, []).
 :- module(aoc2019day7).
 :- initialization(main, main).
-:- use_module(library(clpfd)).
 :- use_module('../intcode.pl', [interpret/3, load//1]).
 
 part_one(VM, Result) :-
@@ -40,5 +39,8 @@ main([File]) :-
     once(phrase_from_file(load(VM), File)),
     part_one(VM, ResultOne),
     writeln(ResultOne),
-    part_two(VM, ResultTwo),
+    % 23,351,435 inferences, 1.463 CPU in 1.466 seconds (100% CPU, 15956216 Lips)
+    time(part_two(VM, ResultTwo)),
     writeln(ResultTwo).
+
+main([]) :- main(['2019/7/input.txt']).

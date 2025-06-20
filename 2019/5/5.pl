@@ -7,11 +7,13 @@
 :- use_module('../intcode.pl', [interpret/3, load//1]).
 
 part_one(IntCode, Result) :-
-    interpret([1], [Result | Zeroes], IntCode),
+    interpret([1], Output, IntCode),
+    once(append(Zeroes, [Result], Output)),
     maplist(=(0), Zeroes).
 
 part_two(IntCode, Result) :-
-    interpret([5], [Result | Zeroes], IntCode),
+    interpret([5], Output, IntCode),
+    once(append(Zeroes, [Result], Output)),
     maplist(=(0), Zeroes).
 
 main([File]) :-
