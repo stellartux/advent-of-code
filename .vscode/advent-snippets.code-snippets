@@ -5,6 +5,7 @@
 		"body": [
 			"#!/usr/bin/env julia",
 			"# usage: julia ${2:1}.jl [FILENAME]",
+			"# https://adventofcode.com/20${1:25}/day/${2:1}",
 			"",
 			"module AOC20${1:25}Day${2:1}",
 			"",
@@ -39,6 +40,7 @@
 		"body": [
 			"#!/usr/bin/env swipl",
 			"% usage: swipl ${2:1}.pl FILENAME",
+			"% https://adventofcode.com/20${1:24}/day/${2:1}",
 			"",
 			":- module(aoc20${1:24}day${2:1}, []).",
 			":- module(aoc20${1:24}day${2:1}).",
