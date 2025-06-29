@@ -3,69 +3,70 @@
 
 module AOC2024Day16
 
-load(file::AbstractString) = hcat(collect.(eachline(file))...)
+load(file::AbstractString) = stack(eachline(file); dims=2)
 
-const up = CartesianIndex(0, -1)
-const down = CartesianIndex(0, 1)
-const left = CartesianIndex(-1, 0)
-const right = CartesianIndex(1, 0)
-
-function turnright(dir)
-    if dir == up
-        right
-    elseif dir == right
-        down
-    elseif dir == down
-        left
-    else
-        up
+function debug(scores, visited=Set{CartesianIndex{2}}())
+    for (x, col) in enumerate(eachcol(scores))
+        for (y, v) in enumerate(col)
+            c = CartesianIndex(y, x)
+            print(v == typemax(Int) ? "\033[97m#" : c ∈ visited ? "\033[93mO" : "\033[90m.")
+        end
+        println()
     end
+    println("\033[0m")
 end
 
-function turnleft(dir)
-    if dir == up
-        left
-    elseif dir == right
-        up
-    elseif dir == down
-        right
-    else
-        down
-    end
-end
+leftright(dir) = (CartesianIndex(dir[2], dir[1]), CartesianIndex(-dir[2], -dir[1]))
 
-function partone(grid)
+function solve(grid::Matrix{Char})
     stop = findfirst(==('E'), grid)
     start = findfirst(==('S'), grid)
-    reindeer = [(start, right, 0)]
+    queue = [(start, CartesianIndex(1, 0), 0, Set{CartesianIndex{2}}())]
+    visited = Set{CartesianIndex{2}}()
     scores = fill(typemax(Int), size(grid))
-    while !isempty(reindeer)
-        pos, dir, score = popfirst!(reindeer)
-        while score <= scores[pos]
-            scores[pos] = score
-            for d in (turnright(dir), turnleft(dir))
-                if grid[pos+d] != '#' && scores[pos+d] >= score + 1000
-                    push!(reindeer, (pos + d, d, score + 1001))
-                end
-            end
-            if grid[pos+dir] == '#'
+    minscore = typemax(Int)
+    while !isempty(queue)
+        here, dir, score, path = popfirst!(queue)
+        while score <= minscore
+            if score > scores[here] && get(scores, here + dir, typemax(Int)) < score + 1
+                break
+            elseif score == scores[here] && here ∈ visited
+                union!(visited, path)
                 break
             end
-            pos += dir
+            scores[here] = score
+            push!(path, here)
+            if here == stop
+                if score < minscore
+                    minscore = score
+                    visited = path
+                elseif score == minscore
+                    union!(visited, path)
+                end
+                break
+            end
+            for d in leftright(dir)
+                if grid[here+d] != '#' && scores[here+d] > score + 1001
+                    push!(queue, (here + d, d, score + 1001, copy(path)))
+                end
+            end
+            if grid[here+dir] == '#'
+                break
+            end
+            here += dir
             score += 1
         end
     end
-    scores[stop]
+    minscore, length(visited)
 end
-
-# function parttwo(input)
-
-# end
 
 if abspath(PROGRAM_FILE) == @__FILE__
     input = load(get(ARGS, 1, joinpath(@__DIR__, "input.txt")))
-    println(partone(input))
-    # println(parttwo(input))
+    # solve both parts in one pass
+    println.(solve(input))
+elseif isinteractive()
+    using REPL
+    REPL.activate(AOC2024Day16)
 end
 
 end # module
