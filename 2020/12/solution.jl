@@ -15,14 +15,14 @@ commandmap = Dict(
     'E' => v -> pos.x += v,
     'R' => v -> pos.bearing = (pos.bearing + v) % 360,
     'L' => v -> pos.bearing = (360 + pos.bearing - v) % 360,
-    'F' => v -> commandmap["NESW"[(pos.bearing ÷ 90) + 1]](v))
+    'F' => v -> commandmap["NESW"[(pos.bearing÷90)+1]](v))
 
 for command in commands
     commandmap[command[1]](parse(Int, command[2:end]))
     println(pos)
 end
 
-print(abs(pos.x) + abs(pos.y)) # 521
+println(abs(pos.x) + abs(pos.y)) # 521
 
 ship = Position(0, 0, 0)
 waypoint = Position(10, 1, 0)
@@ -49,13 +49,13 @@ commanddict = Dict(
     'R' => rotate,
     'L' => v -> rotate(360 - v),
     'F' => function (v)
-    diff = (x = waypoint.x - ship.x,)
-    ship.x += waypoint.x * v
-    ship.y += waypoint.y * v
-end)
+        diff = (x=waypoint.x - ship.x,)
+        ship.x += waypoint.x * v
+        ship.y += waypoint.y * v
+    end)
 
 for command in commands
     commanddict[command[1]](parse(Int, command[2:end]))
 end
 
-print(abs(ship.x) + abs(ship.y))
+println(abs(ship.x) + abs(ship.y))
