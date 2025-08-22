@@ -4,7 +4,7 @@
 
 module AOC2023Day17
 include("../../helpers/heaps.jl")
-using .Heaps: BinaryHeap, SortHeap
+using .Heaps: SkewHeap
 
 load(file::AbstractString) =
     stack(parse.(Int, split(line, "")) for line in eachline(file))
@@ -30,7 +30,7 @@ end
 
 function search(grid::Matrix{Int}, range)
     visited = Dict{Tuple{CartesianIndex{2},CartesianIndex{2},Int},Int}()
-    queue = BinaryHeap((
+    queue = SkewHeap((
         (grid[CartesianIndex(2, 1)], CartesianIndex(2, 1), CartesianIndex(1, 0), 1),
         (grid[CartesianIndex(1, 2)], CartesianIndex(1, 2), CartesianIndex(0, 1), 1),
     ); by=first)
@@ -56,8 +56,8 @@ parttwo(grid) = search(grid, 4:10)
 
 if abspath(PROGRAM_FILE) == @__FILE__
     input = load(get(ARGS, 1, joinpath(@__DIR__, "input.txt")))
-    println(partone(input))
-    println(parttwo(input))
+    println(@time partone(input))
+    println(@time parttwo(input))
 elseif isinteractive()
     using REPL
     REPL.activate(AOC2023Day17)
