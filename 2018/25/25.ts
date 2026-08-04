@@ -1,4 +1,4 @@
-// #!/usr/bin/env -S deno run --allow-read --
+#!/usr/bin/env -S deno run --allow-read --
 
 import { Coord } from "../../helpers/coord.ts";
 import { UnionFind } from "../../helpers/unionfind.ts";

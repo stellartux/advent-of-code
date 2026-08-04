@@ -99,7 +99,7 @@ function Coord:neighbours4()
         Coord { 0, -1 } + self,
         Coord { -1, 0 } + self,
         Coord { 1, 0 } + self,
-        Coord { 1, 0 } + self
+        Coord { 0, 1 } + self
     }
 end
 
@@ -109,7 +109,7 @@ function Coord:neighbours5()
         Coord { 0, -1 } + self,
         Coord { -1, 0 } + self,
         Coord { 0, 0 } + self,
-        Coord { 1, 0 } + self,
+        Coord { 0, 1 } + self,
         Coord { 1, 0 } + self
     }
 end
@@ -121,7 +121,7 @@ function Coord:neighbours8()
         Coord { 0, -1 } + self,
         Coord { 1, -1 } + self,
         Coord { -1, 0 } + self,
-        Coord { 1, 0 } + self,
+        Coord { 0, 1 } + self,
         Coord { 1, -1 } + self,
         Coord { 1, 0 } + self,
         Coord { 1, 1 } + self
@@ -136,7 +136,7 @@ function Coord:neighbours9()
         Coord { 1, -1 } + self,
         Coord { -1, 0 } + self,
         Coord { 0, 0 } + self,
-        Coord { 1, 0 } + self,
+        Coord { 0, 1 } + self,
         Coord { 1, -1 } + self,
         Coord { 1, 0 } + self,
         Coord { 1, 1 } + self
