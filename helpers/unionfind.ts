@@ -62,10 +62,3 @@ export class UnionFind<Value> {
     }
   }
 }
-
-// export class UnionFind {
-//   constructor(input) {
-
-//   }
-
-// }
